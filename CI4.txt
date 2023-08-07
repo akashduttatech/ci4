@@ -1,0 +1,7 @@
+***** Ignore public and index.php from url *****
+Step 1: Edit /app/config/app.php > change $baseURL = 'http://localhost:8080/' to $baseURL = 'http://localhost/ci4/'
+Step 2: Edit app/config/app.php > change uriProtocol from $uriProtocol = 'REQUEST_URI' to $uriProtocol = 'PATH_INFO'
+Step 3: In public folder, Copy index.php and .htaccess to your root project directory
+Step 4: Edit index.php > change FCPATH . '../app/Config/Paths.php' to FCPATH . './app/Config/Paths.php'
+
+*****  *****
