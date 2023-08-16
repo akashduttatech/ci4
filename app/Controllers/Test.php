@@ -34,7 +34,8 @@ class Test extends BaseController
         $data = [
             "name" => 'Akash',
             "age" => 29,
-            "languages" => ['Java', 'Php', 'JavaScript', 'HTML', 'CSS', 'Boostrap']
+            "languages" => ['Java', 'Php', 'JavaScript', 'HTML', 'CSS', 'Boostrap'],
+            "status" => true
         ];
         return view('test', $data);
     }

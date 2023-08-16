@@ -3,5 +3,182 @@ Step 1: Edit /app/config/app.php > change $baseURL = 'http://localhost:8080/' to
 Step 2: Edit app/config/app.php > change uriProtocol from $uriProtocol = 'REQUEST_URI' to $uriProtocol = 'PATH_INFO'
 Step 3: In public folder, Copy index.php and .htaccess to your root project directory
 Step 4: Edit index.php > change FCPATH . '../app/Config/Paths.php' to FCPATH . './app/Config/Paths.php'
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** Create controller *****
+Step 1: Create a file, named ControllerName.php inside controller folder
+Step 2: Write bellow code
+        <?php
+        namespace App\Controllers;
+        class ControllerName extends BaseController
+        {}
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** View page *****
+Step 1: Create a function
+Step 2: Write bellow code
+        public function index()
+        {
+            $data = [
+                "name" => 'Akash',
+                "age" => 29,
+                "languages" => ['Java', 'Php', 'JavaScript', 'HTML', 'CSS', 'Boostrap'],
+                "status" => true
+            ];
+            return view('test', $data);
+            //echo view('test', $data);
+        }
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** Create model *****
+Step 1: Create a file, named ModelName.php inside model folder
+Step 2: Write bellow code
+        <?php
+        namespace App\Models;
+        use CodeIgniter\Model;
+        class ModelName extends Model{}
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** Load model to controller *****
+Step 1: use App\Models\UserModel; // load model
+Step 2: $userModel = new UserModel(); // create object
+Step 3: $data = $userModel->getData(); // call method
+Step 4: print_r($data); die('--**********--'); // print to check
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** Database configuration *****
+# There are 2 way
+1. From app/config/database.php
+    Step 1: Goto app/config/database
+    Step 2: Name the database, username, password
+2. From .env
+    Step 1: Open env file
+    Step 2: Uncomment database
+            database.default.hostname = localhost
+            database.default.database = ci4
+            database.default.username = root
+            database.default.password = 
+            database.default.DBDriver = MySQLi
+            database.default.DBPrefix =
+            database.default.port = 3306
+    Step 3: Rename env to .env
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** Error logging *****
+Step 1: Write bellow code at the beginning of a controller file after namespace App\Controllers;
+        //exit('No direct script access allowed');
+        //ini_set('display_errors', 1);
+        //ini_set('display_startup_errors', 1);
+        //error_reporting(E_ALL);
+        error_reporting(0);
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** Routing *****
+Multiple types of methods:
+1: $routes->add('/', 'ControllerName::MethodName'); // add() method is more versatile and is used for defining routes for various HTTP methods, including GET, POST, PUT, DELETE, etc
+2: $routes->get('/', 'ControllerName::MethodName'); // get() method is useful when you want to define routes for GET requests that should display specific pages, like a static page or a view.
 
-*****  *****
+***** Form Routing *****
+Step 1: Use $routes->add('/add', 'User::add'); Or $routes->get('/add', 'User::add'); $routes->post('/add', 'User::add');
+Step 2: Check method type->
+        $this->request->getMethod() // getMethod() need to use in previous versions
+        $this->request->is('post) // is('post'), is('get')  $this->request->is() method can be used since v4.3.0
+Step 3: Get the value->
+        $this->request->getVar() // get all posts
+        $this->request->getVar('fieldName') // get particular post
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** Form Validation *****
+Set rules (Multiple ways-> Default, Custom, Loading CI library):
+        Default:
+                Step 1: Set rules:
+                        $rules = [
+                                'name' => 'required',
+                                'email' => 'required|valid_email',
+                                'age' => 'required',
+                                'number' => 'required|exact_length[10]',
+                                ];
+                Step 2: Check validation:
+                        $this->validate($rules) // true false
+                Step 3: Check error:
+                        $this->validator->hasError('name') // true false
+                Step 4: Print error:
+                        $this->validator->listErrors() // list all the errors list wise
+                        $this->validator->getErrors() // list all the errors array wise
+                        $this->validator->getError('name') // get individual error
+        
+        Custom:
+                Step 1: Set rules:
+                        $rules = [
+                                'name' => [
+                                        'label' => 'Name',
+                                        'rules' => 'required',
+                                        'errors' => [
+                                                        'required' => '{field} is Required',
+                                                ],
+                                        ],
+                                'email' => [
+                                        'label' => 'Email',
+                                        'rules' => 'required|valid_email',
+                                        'errors' => [
+                                                        'required' => '{field} is Required',
+                                                        'valid_email' => '{value} is not a valid email',
+                                                ],
+                                        ],
+                                'age' => [
+                                        'label' => 'Age',
+                                        'rules' => 'required',
+                                        'errors' => [
+                                                        'required' => '{field} is Required',
+                                                ],
+                                        ],
+                                'number' => [
+                                        'label' => 'Phone Number',
+                                        'rules' => 'required|exact_length[10]',
+                                        'errors' => [
+                                                        'required' => '{field} is Required',
+                                                        'exact_length' => '{field} - {value} must be {param} digit',
+                                                ],
+                                        ],
+                                ];
+                Step 2: Check validation:
+                        $this->validate($rules) // true false
+                Step 3: Check error:
+                        $this->validator->hasError('name') // true false
+                Step 4: Print error:
+                        $this->validator->listErrors() // list all the errors list wise
+                        $this->validator->getErrors() // list all the errors array wise
+                        $this->validator->getError('name') // get individual error                
+        
+        Loading CI library:
+                Step 1: Declare a variable inside class:
+                                protected $validation;
+                Step 2: Load CI library inside __construct():
+                                $this->validation = \Config\Services::validation();
+                Step 3: Set rules:
+                                $this->validation->setRule('name', 'Name', 'required|max_length[30]|min_length[3]');
+                Step 3: Check validation:
+                                $this->validation->withRequest($this->request)->run() // true false
+                Step 4: Check error:
+                        $this->validation->hasError('name') // true false
+                Step 5: Print error:
+                        $this->validation->listErrors() // list all the errors list wise
+                        $this->validation->getErrors() // list all the errors array wise
+                        $this->validation->getError('name') // get individual error 
+NOTE: Use CI library
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** Set Value *****
+Step 1: Load form helper:
+                1. Inside Autoload helper:
+                        public $helpers = ['form'];
+                1. Inside __construct():
+                        helper('form');
+Step 2: Set value in HTML input tag:
+                1. set_value('$field', '$default'):
+                        value="<?= set_value('username', 'Akash') ?>" // default value
+                2. set_value('$field'):
+                        value="<?= set_value('username') ?>"
+Example:
+        <input type="text" name="username" value="<?= set_value('username') ?>">
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** MySQL Query *****
+Step 1: $sql = "SELECT * FROM users";
+Step 3: $query = $this->db->query($sql);
+Step 3: // return $query->getResult(); // return as object
+        return $query->getResultArray(); // return as array
+-----------------------------------------------------------------------------------------------------------------------------------------
+***** Redirect to controller *****
+1. return redirect()->to('/');
+2. return redirect()->route('/');

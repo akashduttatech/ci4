@@ -19,17 +19,18 @@
         <?php
             foreach ($languages as $lang) :
         ?>
-            <li><?= $lang; ?></li>
+        <li><?= $lang; ?></li>
         <?php
             endforeach;
         ?>
     </ul>
-<?php
+    <?php
         else :
             echo 'No records found';
         endif;
 ?>
-</p>
+    </p>
+
 </body>
 
 </html>
